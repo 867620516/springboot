@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="spring.boot.hr.app.dao.TalentMapper">
+
+    <resultMap id="talentMap" type="spring.boot.hr.app.model.Talent">
+        <id property="id" column="id"></id>
+        <result property="name" column="name"></result>
+        <result property="sexual" column="sexual"></result>
+        <result property="graduation" column="graduation"></result>
+        <result property="employDate" column="employ_date"></result>
+        <association property="department" javaType="spring.boot.hr.app.model.Department">
+            <id property="id" column="id"></id>
+            <result property="departName" column="depart_name"></result>
+            <result property="departPhone" column="depart_phone"></result>
+        </association>
+
+    </resultMap>
+
+    <select id="findList" resultMap="talentMap">
+        select * from talents t
+        left join department d on d.id = t.depart_id
+        <where>
+            <if test="name!=null and name!= ''">
+                and t.name = #{name}
+            </if>
+            <if test="sexual!=null and sexual!=''">
+                and t.sexual = #{sexual}
+            </if>
+            <if test="employDate!=null">
+                and t.employ_date = #{employDate}
+            </if>
+        </where>
+    </select>
+
+    <delete id="delete">
+        delete from talents where id = #{id}
+    </delete>
+
+    <insert id="insert">
+        insert into talents (name, sexual, employ_date, depart_id) values (
+          #{name},#{sexual},#{employDate},#{department.id}
+        );
+    </insert>
+
+    <update id="update">
+        update talents set
+        name = #{name},
+        sexual = #{sexual},
+        employ_date = #{employDate},
+        depart_id = #{department.id}
+        where id = #{id}
+    </update>
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="spring.boot.hr.app.dao.UserMapper">
+    <!--<select id="findById" resultType="spring.app.model.User">
+        select
+         id,
+         user_name 'username',
+         password,
+         name,
+         phone,
+         del_flag 'delFlag'
+         from user where id = #{id}
+    </select>-->
+
+    <!--单参数情况下可以不写parameterType-->
+    <!--find方法-->
+    <select id="find" resultType="spring.boot.hr.sys.security.User">
+        select
+        id,
+        user_name as 'username',
+        password,
+        name,
+        phone,
+        del_flag as  'delFlag'
+        from user
+        <where>
+            <if test="username !=null and username != ''">
+                and user_name=#{username}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="phone !=null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="password !=null and password != ''">
+                and password = #{password}
+            </if>
+        </where>
+        limit 1
+    </select>
+
+
+
+    <!--插入语句-->
+    <insert id="insert">
+        insert into user (
+          user_name,
+          password,
+          phone,
+          name,
+          del_flag
+        )values(
+          #{username},
+          #{password},
+          #{phone},
+          #{name},
+          '0'
+        )
+    </insert>
+
+    <!--更新操作-->
+    <update id="update">
+        update user set
+          user_name = #{username},
+          password = #{password},
+          phone = #{phone},
+          name = #{name}
+        where id = #{id}
+    </update>
+
+    <update id = "delete" parameterType="java.lang.Long">
+        update user set
+          del_flag = '1'
+        where id = #{id}
+    </update>
+</mapper>
